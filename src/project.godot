@@ -1,0 +1,32 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="One Yen"
+config/description="With One Yen you can track your money without having to worry that bigger companies are going to use that data. Everything stay's on your system and yours alone."
+config/version="0.1"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="one_yen"
+config/auto_accept_quit=false
+config/features=PackedStringArray("4.6", "GL Compatibility")
+run/low_processor_mode=true
+boot_splash/show_image=false
+config/icon="res://icon.svg"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+rendering_device/driver.windows="d3d12"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
