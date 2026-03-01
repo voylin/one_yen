@@ -75,7 +75,7 @@ expand_margin_top = 2.0
 expand_margin_right = 2.0
 expand_margin_bottom = 2.0
 
-[node name="Main" type="PanelContainer" unique_id=1307242947 node_paths=PackedStringArray("button_save", "option_button_year", "option_button_month")]
+[node name="Main" type="PanelContainer" unique_id=1307242947 node_paths=PackedStringArray("button_save", "option_button_year", "option_button_month", "text_edit_memo", "tree_income", "tree_monthly_expenses", "tree_expenses", "tree_receipts", "label_year_amount", "label_month_amount")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -86,6 +86,13 @@ script = ExtResource("1_ig7tw")
 button_save = NodePath("VBox/TopContainer/HBox/SaveButton")
 option_button_year = NodePath("VBox/ContentHBox/LeftVBox/YearMonthContainer/VBox/YearOptionButton")
 option_button_month = NodePath("VBox/ContentHBox/LeftVBox/YearMonthContainer/VBox/MonthOptionButton")
+text_edit_memo = NodePath("VBox/ContentHBox/LeftVBox/MemoTextEdit")
+tree_income = NodePath("VBox/ContentHBox/MiddleVBox/IncomePanel/VBox/IncomeTree")
+tree_monthly_expenses = NodePath("VBox/ContentHBox/MiddleVBox/MonthlyExpensePanel/VBox/MonthlyExpensesTree")
+tree_expenses = NodePath("VBox/ContentHBox/MiddleVBox/ExpensesPanel/VBox/ExpensesTree")
+tree_receipts = NodePath("VBox/ContentHBox/ReceiptTree")
+label_year_amount = NodePath("VBox/ContentHBox/MiddleVBox/SummaryPanel/SummaryGrid/YearAmountLabel")
+label_month_amount = NodePath("VBox/ContentHBox/MiddleVBox/SummaryPanel/SummaryGrid/MonthAmountLabel")
 
 [node name="VBox" type="VBoxContainer" parent="." unique_id=793946214]
 layout_mode = 2

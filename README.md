@@ -11,10 +11,12 @@ One Yen isn't a fancy money tracker, there's no AI, there's no connectivity betw
 ## Roadmap
 - [ ] Theme support;
 - [ ] Settings menu;
+- [ ] Add currency mark setting;
 - [ ] Exporting data as CSV;
 - [ ] Search functionality;
 - [ ] Custom encryption key;
 - [ ] Localization (to Japanese and Dutch);
+- [ ] Make it possible to edit previous receipts;
 
 ### If popular
 If One Yen becomes used by many people I would most likely add some kind of "dashboard" with a quick overview of how each year was in terms of income/expenses/break-even/... with nice graphs for each year.
