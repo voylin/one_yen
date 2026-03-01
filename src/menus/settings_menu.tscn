@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://btinkb6jw6dn3"]
+
+[node name="SettingsMenu" type="PopupPanel" unique_id=174272250]
+oversampling_override = 1.0
+visible = true
