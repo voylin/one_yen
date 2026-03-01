@@ -1,0 +1,108 @@
+# LANGUAGE translation for One Yen for the following files:
+# res://main.gd
+# res://main.tscn
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: One Yen\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: main.tscn
+msgid "Add receipt(s)"
+msgstr ""
+
+#: main.tscn
+msgid "Export data"
+msgstr ""
+
+#: main.tscn
+msgid "Settings"
+msgstr ""
+
+#: main.tscn
+msgid "2026"
+msgstr ""
+
+#: main.tscn
+msgid "January"
+msgstr ""
+
+#: main.tscn
+msgid "February"
+msgstr ""
+
+#: main.tscn
+msgid "March"
+msgstr ""
+
+#: main.tscn
+msgid "April"
+msgstr ""
+
+#: main.tscn
+msgid "May"
+msgstr ""
+
+#: main.tscn
+msgid "June"
+msgstr ""
+
+#: main.tscn
+msgid "July"
+msgstr ""
+
+#: main.tscn
+msgid "August"
+msgstr ""
+
+#: main.tscn
+msgid "September"
+msgstr ""
+
+#: main.tscn
+msgid "October"
+msgstr ""
+
+#: main.tscn
+msgid "November"
+msgstr ""
+
+#: main.tscn
+msgid "December"
+msgstr ""
+
+#: main.tscn
+msgid "Memo ..."
+msgstr ""
+
+#: main.tscn
+msgid "Income"
+msgstr ""
+
+#: main.tscn
+msgid "Monthly expenses"
+msgstr ""
+
+#: main.tscn
+msgid "Expenses"
+msgstr ""
+
+#: main.tscn
+msgid "Year's total"
+msgstr ""
+
+#: main.tscn
+msgid "Month's total"
+msgstr ""
+
+#: main.tscn
+msgid "0円"
+msgstr ""
+
+msgid "One Yen"
+msgstr ""
