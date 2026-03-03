@@ -25,6 +25,7 @@ offset_bottom = 196.0
 layout_mode = 2
 size_flags_vertical = 3
 column_titles_visible = true
+hide_folding = true
 scroll_horizontal_enabled = false
 
 [node name="ButtonHBox" type="HBoxContainer" parent="VBox" unique_id=1085080091]

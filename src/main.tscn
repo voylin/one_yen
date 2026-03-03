@@ -15,67 +15,10 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ig7tw"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-bg_color = Color(0.1, 0.1, 0.1, 0.6)
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0xm2m"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-bg_color = Color(0.1, 0.1, 0.1, 0.6)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
-corner_detail = 5
-
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7dm0k"]
 size = Vector2(0, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2yge"]
-content_margin_left = 7.0
-content_margin_top = 7.0
-content_margin_right = 7.0
-content_margin_bottom = 7.0
-bg_color = Color(0.1, 0.1, 0.1, 0.6)
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 0.6)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
-corner_detail = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bvp3"]
-content_margin_left = 7.0
-content_margin_top = 7.0
-content_margin_right = 7.0
-content_margin_bottom = 7.0
-bg_color = Color(1, 1, 1, 0)
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.8, 0.8, 0.8, 0.27450982)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
-
-[node name="Main" type="PanelContainer" unique_id=1307242947 node_paths=PackedStringArray("button_save", "option_button_year", "option_button_month", "text_edit_memo", "tree_income", "tree_monthly_expenses", "tree_expenses", "tree_receipts", "label_year_amount", "label_month_amount")]
+[node name="Main" type="PanelContainer" unique_id=1307242947 node_paths=PackedStringArray("button_save", "option_button_year", "option_button_month", "text_edit_memo", "tree_monthly_income", "tree_monthly_expenses", "tree_summary", "tree_receipts", "label_year_amount", "label_month_amount")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -84,23 +27,23 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7dm0k")
 script = ExtResource("1_ig7tw")
 button_save = NodePath("VBox/TopContainer/HBox/SaveButton")
-option_button_year = NodePath("VBox/ContentHBox/LeftVBox/YearMonthContainer/VBox/YearOptionButton")
-option_button_month = NodePath("VBox/ContentHBox/LeftVBox/YearMonthContainer/VBox/MonthOptionButton")
-text_edit_memo = NodePath("VBox/ContentHBox/LeftVBox/MemoTextEdit")
-tree_income = NodePath("VBox/ContentHBox/MiddleVBox/IncomePanel/VBox/IncomeTree")
-tree_monthly_expenses = NodePath("VBox/ContentHBox/MiddleVBox/MonthlyExpensePanel/VBox/MonthlyExpensesTree")
-tree_expenses = NodePath("VBox/ContentHBox/MiddleVBox/ExpensesPanel/VBox/ExpensesTree")
-tree_receipts = NodePath("VBox/ContentHBox/ReceiptTree")
-label_year_amount = NodePath("VBox/ContentHBox/MiddleVBox/SummaryPanel/SummaryGrid/YearAmountLabel")
-label_month_amount = NodePath("VBox/ContentHBox/MiddleVBox/SummaryPanel/SummaryGrid/MonthAmountLabel")
+option_button_year = NodePath("VBox/ContentHSplit/LeftVBox/YearMonthContainer/VBox/YearOptionButton")
+option_button_month = NodePath("VBox/ContentHSplit/LeftVBox/YearMonthContainer/VBox/MonthOptionButton")
+text_edit_memo = NodePath("VBox/ContentHSplit/LeftVBox/MemoTextEdit")
+tree_monthly_income = NodePath("VBox/ContentHSplit/MiddleVSplit/MonthlyIncomeTree")
+tree_monthly_expenses = NodePath("VBox/ContentHSplit/MiddleVSplit/MonthlyExpensesTree")
+tree_summary = NodePath("VBox/ContentHSplit/MiddleVSplit/SummaryTree")
+tree_receipts = NodePath("VBox/ContentHSplit/ReceiptPanel/MarginContainer/ReceiptTree")
+label_year_amount = NodePath("VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel/SummaryGrid/YearAmountLabel")
+label_month_amount = NodePath("VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel/SummaryGrid/MonthAmountLabel")
 
 [node name="VBox" type="VBoxContainer" parent="." unique_id=793946214]
 layout_mode = 2
+theme_override_constants/separation = 14
 
 [node name="TopContainer" type="PanelContainer" parent="VBox" unique_id=2088671801]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ig7tw")
 
 [node name="HBox" type="HBoxContainer" parent="VBox/TopContainer" unique_id=647028784]
 layout_mode = 2
@@ -117,7 +60,7 @@ text = "Add receipt(s)"
 
 [node name="SearchDataButton" type="Button" parent="VBox/TopContainer/HBox" unique_id=2028574022]
 layout_mode = 2
-text = "Export data"
+text = "Search data"
 
 [node name="ExportDataButton" type="Button" parent="VBox/TopContainer/HBox" unique_id=657392021]
 layout_mode = 2
@@ -127,25 +70,25 @@ text = "Export data"
 layout_mode = 2
 text = "Settings"
 
-[node name="ContentHBox" type="HBoxContainer" parent="VBox" unique_id=1719499723]
+[node name="ContentHSplit" type="HSplitContainer" parent="VBox" unique_id=1047299190]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 14
+split_offsets = PackedInt32Array(0, 0)
 
-[node name="LeftVBox" type="VBoxContainer" parent="VBox/ContentHBox" unique_id=1926017873]
+[node name="LeftVBox" type="VBoxContainer" parent="VBox/ContentHSplit" unique_id=1926017873]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="YearMonthContainer" type="PanelContainer" parent="VBox/ContentHBox/LeftVBox" unique_id=1925610648]
+[node name="YearMonthContainer" type="PanelContainer" parent="VBox/ContentHSplit/LeftVBox" unique_id=1925610648]
 custom_minimum_size = Vector2(200, 100)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0xm2m")
 
-[node name="VBox" type="VBoxContainer" parent="VBox/ContentHBox/LeftVBox/YearMonthContainer" unique_id=650467241]
+[node name="VBox" type="VBoxContainer" parent="VBox/ContentHSplit/LeftVBox/YearMonthContainer" unique_id=650467241]
 layout_mode = 2
 alignment = 1
 
-[node name="YearOptionButton" type="OptionButton" parent="VBox/ContentHBox/LeftVBox/YearMonthContainer/VBox" unique_id=1484260241]
+[node name="YearOptionButton" type="OptionButton" parent="VBox/ContentHSplit/LeftVBox/YearMonthContainer/VBox" unique_id=1484260241]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 30
@@ -158,7 +101,7 @@ item_count = 1
 popup/item_0/text = "2026"
 popup/item_0/id = 0
 
-[node name="MonthOptionButton" type="OptionButton" parent="VBox/ContentHBox/LeftVBox/YearMonthContainer/VBox" unique_id=571041669]
+[node name="MonthOptionButton" type="OptionButton" parent="VBox/ContentHSplit/LeftVBox/YearMonthContainer/VBox" unique_id=571041669]
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_icons/arrow = SubResource("PlaceholderTexture2D_7dm0k")
@@ -192,118 +135,107 @@ popup/item_10/id = 10
 popup/item_11/text = "December"
 popup/item_11/id = 11
 
-[node name="MemoTextEdit" type="TextEdit" parent="VBox/ContentHBox/LeftVBox" unique_id=535051839]
+[node name="MemoTextEdit" type="TextEdit" parent="VBox/ContentHSplit/LeftVBox" unique_id=535051839]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/normal = SubResource("StyleBoxFlat_h2yge")
-theme_override_styles/focus = SubResource("StyleBoxFlat_1bvp3")
 placeholder_text = "Memo ..."
 
-[node name="MiddleVBox" type="VBoxContainer" parent="VBox/ContentHBox" unique_id=200815516]
+[node name="MiddleVSplit" type="VSplitContainer" parent="VBox/ContentHSplit" unique_id=2041308027]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-theme_override_constants/separation = 28
+split_offsets = PackedInt32Array(-3, -64, -51)
+split_offset = -3
 
-[node name="IncomePanel" type="PanelContainer" parent="VBox/ContentHBox/MiddleVBox" unique_id=1700538968]
+[node name="MonthlyIncomeTree" type="Tree" parent="VBox/ContentHSplit/MiddleVSplit" unique_id=683497514]
 layout_mode = 2
-
-[node name="VBox" type="VBoxContainer" parent="VBox/ContentHBox/MiddleVBox/IncomePanel" unique_id=545422448]
-layout_mode = 2
-
-[node name="IncomeLabel" type="Label" parent="VBox/ContentHBox/MiddleVBox/IncomePanel/VBox" unique_id=1481878037]
-layout_mode = 2
-text = "Income"
-horizontal_alignment = 1
-
-[node name="IncomeTree" type="Tree" parent="VBox/ContentHBox/MiddleVBox/IncomePanel/VBox" unique_id=683497514]
-layout_mode = 2
+size_flags_vertical = 3
 columns = 2
+column_titles_visible = true
 hide_folding = true
 hide_root = true
+scroll_horizontal_enabled = false
 
-[node name="MonthlyExpensePanel" type="PanelContainer" parent="VBox/ContentHBox/MiddleVBox" unique_id=1378496201]
+[node name="MonthlyExpensesTree" type="Tree" parent="VBox/ContentHSplit/MiddleVSplit" unique_id=1202183236]
 layout_mode = 2
-
-[node name="VBox" type="VBoxContainer" parent="VBox/ContentHBox/MiddleVBox/MonthlyExpensePanel" unique_id=1172478012]
-layout_mode = 2
-
-[node name="MonthlyExpenseLabel" type="Label" parent="VBox/ContentHBox/MiddleVBox/MonthlyExpensePanel/VBox" unique_id=1879164100]
-layout_mode = 2
-text = "Monthly expenses"
-horizontal_alignment = 1
-
-[node name="MonthlyExpensesTree" type="Tree" parent="VBox/ContentHBox/MiddleVBox/MonthlyExpensePanel/VBox" unique_id=1202183236]
-layout_mode = 2
+size_flags_vertical = 3
 columns = 2
+column_titles_visible = true
 hide_folding = true
 hide_root = true
+scroll_horizontal_enabled = false
 
-[node name="ExpensesPanel" type="PanelContainer" parent="VBox/ContentHBox/MiddleVBox" unique_id=1187940507]
+[node name="SummaryTree" type="Tree" parent="VBox/ContentHSplit/MiddleVSplit" unique_id=946825238]
 layout_mode = 2
-
-[node name="VBox" type="VBoxContainer" parent="VBox/ContentHBox/MiddleVBox/ExpensesPanel" unique_id=1924100775]
-layout_mode = 2
-
-[node name="ExpensesLabel" type="Label" parent="VBox/ContentHBox/MiddleVBox/ExpensesPanel/VBox" unique_id=679478496]
-layout_mode = 2
-text = "Expenses"
-horizontal_alignment = 1
-
-[node name="ExpensesTree" type="Tree" parent="VBox/ContentHBox/MiddleVBox/ExpensesPanel/VBox" unique_id=946825238]
-layout_mode = 2
+size_flags_vertical = 3
 columns = 2
+column_titles_visible = true
 hide_folding = true
 hide_root = true
+scroll_horizontal_enabled = false
+scroll_vertical_enabled = false
 
-[node name="SummaryPanel" type="PanelContainer" parent="VBox/ContentHBox/MiddleVBox" unique_id=1451808066]
+[node name="TotalSummaryPanel" type="PanelContainer" parent="VBox/ContentHSplit/MiddleVSplit" unique_id=1451808066]
+clip_children = 2
 layout_mode = 2
 
-[node name="SummaryGrid" type="GridContainer" parent="VBox/ContentHBox/MiddleVBox/SummaryPanel" unique_id=2000369198]
+[node name="SummaryGrid" type="GridContainer" parent="VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel" unique_id=2000369198]
 layout_mode = 2
 columns = 2
 
-[node name="YearTotalLabel" type="Label" parent="VBox/ContentHBox/MiddleVBox/SummaryPanel/SummaryGrid" unique_id=901183377]
+[node name="YearTotalLabel" type="Label" parent="VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel/SummaryGrid" unique_id=901183377]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Year's total"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MonthTotalLabel" type="Label" parent="VBox/ContentHBox/MiddleVBox/SummaryPanel/SummaryGrid" unique_id=510915525]
+[node name="MonthTotalLabel" type="Label" parent="VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel/SummaryGrid" unique_id=510915525]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Month's total"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="YearAmountLabel" type="Label" parent="VBox/ContentHBox/MiddleVBox/SummaryPanel/SummaryGrid" unique_id=2111314295]
+[node name="YearAmountLabel" type="Label" parent="VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel/SummaryGrid" unique_id=2111314295]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_styles/normal = ExtResource("2_0xm2m")
-text = "0円"
+text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MonthAmountLabel" type="Label" parent="VBox/ContentHBox/MiddleVBox/SummaryPanel/SummaryGrid" unique_id=191978961]
+[node name="MonthAmountLabel" type="Label" parent="VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel/SummaryGrid" unique_id=191978961]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_styles/normal = ExtResource("2_0xm2m")
-text = "0円"
+text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ReceiptTree" type="Tree" parent="VBox/ContentHBox" unique_id=332942668]
+[node name="ReceiptPanel" type="PanelContainer" parent="VBox/ContentHSplit" unique_id=953253128]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="VBox/ContentHSplit/ReceiptPanel" unique_id=866125507]
+layout_mode = 2
+
+[node name="ReceiptTree" type="Tree" parent="VBox/ContentHSplit/ReceiptPanel/MarginContainer" unique_id=332942668]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+columns = 4
 column_titles_visible = true
 hide_folding = true
 hide_root = true
 scroll_horizontal_enabled = false
 
 [connection signal="pressed" from="VBox/TopContainer/HBox/SaveButton" to="." method="save_data"]
-[connection signal="pressed" from="VBox/TopContainer/HBox/AddReceiptsButton" to="." method="_on_add_receipts_button_pressed"]
-[connection signal="pressed" from="VBox/TopContainer/HBox/SearchDataButton" to="." method="_on_search_data_button_pressed"]
-[connection signal="pressed" from="VBox/TopContainer/HBox/ExportDataButton" to="." method="_on_export_data_button_pressed"]
-[connection signal="pressed" from="VBox/TopContainer/HBox/SettingsButton" to="." method="_on_settings_button_pressed"]
-[connection signal="item_selected" from="VBox/ContentHBox/LeftVBox/YearMonthContainer/VBox/YearOptionButton" to="." method="_on_option_button_item_selected" unbinds=1]
-[connection signal="item_selected" from="VBox/ContentHBox/LeftVBox/YearMonthContainer/VBox/MonthOptionButton" to="." method="_on_option_button_item_selected" unbinds=1]
-[connection signal="text_changed" from="VBox/ContentHBox/LeftVBox/MemoTextEdit" to="." method="_on_memo_text_edit_text_changed"]
+[connection signal="pressed" from="VBox/TopContainer/HBox/AddReceiptsButton" to="." method="_open_popup_panel" binds= ["uid://cd5ss8wxdm763"]]
+[connection signal="pressed" from="VBox/TopContainer/HBox/SearchDataButton" to="." method="_open_popup_panel" binds= ["uid://8a24yq231diy"]]
+[connection signal="pressed" from="VBox/TopContainer/HBox/ExportDataButton" to="." method="_open_popup_panel" binds= ["uid://dmq7ckygnn8lx"]]
+[connection signal="pressed" from="VBox/TopContainer/HBox/SettingsButton" to="." method="_open_popup_panel" binds= ["uid://btinkb6jw6dn3"]]
+[connection signal="item_selected" from="VBox/ContentHSplit/LeftVBox/YearMonthContainer/VBox/YearOptionButton" to="." method="_on_option_button_item_selected" unbinds=1]
+[connection signal="item_selected" from="VBox/ContentHSplit/LeftVBox/YearMonthContainer/VBox/MonthOptionButton" to="." method="_on_option_button_item_selected" unbinds=1]
+[connection signal="text_changed" from="VBox/ContentHSplit/LeftVBox/MemoTextEdit" to="." method="_on_memo_text_edit_text_changed"]

@@ -1,5 +1,5 @@
 class_name PasswordMenu
-extends PopupPanel
+extends Window
 
 
 @export var line_edit: LineEdit

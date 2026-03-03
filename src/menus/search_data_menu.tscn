@@ -1,5 +1,35 @@
 [gd_scene format=3 uid="uid://8a24yq231diy"]
 
-[node name="SearchDataMenu" type="PopupPanel" unique_id=174272250]
+[ext_resource type="Script" uid="uid://3dy1exvnnfbp" path="res://menus/search_data_menu.gd" id="1_qdk8n"]
+
+[node name="SearchDataMenu" type="PopupPanel" unique_id=174272250 node_paths=PackedStringArray("line_edit_search", "tree")]
 oversampling_override = 1.0
+title = "Search Data"
+position = Vector2i(0, 36)
+size = Vector2i(600, 200)
 visible = true
+unresizable = false
+borderless = false
+always_on_top = true
+script = ExtResource("1_qdk8n")
+line_edit_search = NodePath("VBox/SearchLineEdit")
+tree = NodePath("VBox/SearchResultsTree")
+
+[node name="VBox" type="VBoxContainer" parent="." unique_id=152150755]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 596.0
+offset_bottom = 196.0
+
+[node name="SearchLineEdit" type="LineEdit" parent="VBox" unique_id=89567294]
+layout_mode = 2
+placeholder_text = "Search"
+
+[node name="SearchResultsTree" type="Tree" parent="VBox" unique_id=447586383]
+layout_mode = 2
+size_flags_vertical = 3
+column_titles_visible = true
+hide_folding = true
+scroll_horizontal_enabled = false
+
+[connection signal="text_changed" from="VBox/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]

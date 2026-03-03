@@ -1,5 +1,45 @@
 [gd_scene format=3 uid="uid://dmq7ckygnn8lx"]
 
+[ext_resource type="Script" uid="uid://ci8uojc3xotia" path="res://menus/export_data_menu.gd" id="1_cuoea"]
+
 [node name="ExportDataMenu" type="PopupPanel" unique_id=174272250]
 oversampling_override = 1.0
+title = "Export data"
+size = Vector2i(400, 78)
 visible = true
+script = ExtResource("1_cuoea")
+
+[node name="VBox" type="VBoxContainer" parent="." unique_id=373627574]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 396.0
+offset_bottom = 74.0
+
+[node name="PathHBox" type="HBoxContainer" parent="VBox" unique_id=2140439181]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PathLineEdit" type="LineEdit" parent="VBox/PathHBox" unique_id=521559231]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_neighbor_right = NodePath("../SelectPathButton")
+focus_next = NodePath("../SelectPathButton")
+placeholder_text = "Export path ..."
+
+[node name="SelectPathButton" type="Button" parent="VBox/PathHBox" unique_id=882464167]
+layout_mode = 2
+size_flags_horizontal = 4
+focus_neighbor_left = NodePath("../PathLineEdit")
+focus_previous = NodePath("../PathLineEdit")
+text = "Select path"
+
+[node name="ToFromHBox" type="HBoxContainer" parent="VBox" unique_id=1808419293]
+visible = false
+layout_mode = 2
+
+[node name="ExportButton" type="Button" parent="VBox" unique_id=607475108]
+layout_mode = 2
+text = "Export data"
+
+[connection signal="pressed" from="VBox/PathHBox/SelectPathButton" to="." method="_on_select_path_button_pressed"]
+[connection signal="pressed" from="VBox/ExportButton" to="." method="_on_export_button_pressed"]

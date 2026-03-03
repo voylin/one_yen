@@ -1,4 +1,5 @@
-extends PopupPanel
+class_name AddReceiptMenu
+extends Window
 
 @export var tree: Tree
 
@@ -78,17 +79,6 @@ func _on_add_button_pressed() -> void:
 
 	for i: int in 6:
 		tree_item.set_editable(i, true)
-
-	tree_item.set_cell_mode(0, TreeItem.CELL_MODE_RANGE)
-	tree_item.set_range_config(0, 1900, 5000, 1)
-	tree_item.set_cell_mode(1, TreeItem.CELL_MODE_RANGE)
-	tree_item.set_range_config(1, 1, 13, 1) # TODO: Check if max is inclusive.
-	tree_item.set_cell_mode(2, TreeItem.CELL_MODE_RANGE)
-	tree_item.set_range_config(2, 1, 32, 1) # TODO: Check if max is inclusive.
-	tree_item.set_cell_mode(4, TreeItem.CELL_MODE_RANGE)
-	tree_item.set_range_config(4, 0, 2_000_000_000, 1)
-	tree_item.set_cell_mode(5, TreeItem.CELL_MODE_RANGE)
-	tree_item.set_range_config(5, 0, 2_000_000_000, 1)
 
 	if id == 0:
 		# First item, get current date.
