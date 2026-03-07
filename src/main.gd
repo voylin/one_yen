@@ -2,12 +2,14 @@ class_name Main
 extends PanelContainer
 ## Values get stored in int, even values like 12.40 EUR will get stored as 1240.
 
+signal on_display_scaled(ui_scale: float)
+
 const PATH: String = "user://data"
 
 const COLOR_SAVED: Color = Color.WHITE
 const COLOR_UNSAVED: Color = Color.RED
-const COLOR_POSITIVE: Color = Color.GREEN
-const COLOR_NEGATIVE: Color = Color.SALMON
+const COLOR_POSITIVE: Color = Color.DARK_GREEN
+const COLOR_NEGATIVE: Color = Color.DARK_RED
 
 
 static var instance: Main
@@ -20,13 +22,12 @@ static var instance: Main
 
 @export var text_edit_memo: TextEdit
 
+@export_group("Tree's")
 @export var tree_monthly_income: Tree
 @export var tree_monthly_expenses: Tree
 @export var tree_summary: Tree
+@export var tree_total: Tree
 @export var tree_receipts: Tree
-
-@export var label_year_amount: Label
-@export var label_month_amount: Label
 
 
 #---- YEAR/MONTH DATA ---------------------------------------------------------
@@ -85,6 +86,9 @@ func _ready() -> void:
 	tree_summary.set_column_title(0, tr("Summary", &"Tree summary header"))
 	tree_summary.set_column_title(1, tr("Total", &"Tree summary header"))
 
+	tree_total.set_column_title(0, tr("Year's total", &"Tree total header"))
+	tree_total.set_column_title(1, tr("Month's total", &"Tree total header"))
+
 	tree_receipts.set_column_title(0, tr("Day", &"Tree receipts header"))
 	tree_receipts.set_column_title(1, tr("Description", &"Tree receipts header"))
 	tree_receipts.set_column_title(2, tr("Income", &"Tree receipts header"))
@@ -95,16 +99,10 @@ func _ready() -> void:
 	tree_receipts.set_column_custom_minimum_width(2, 80)
 	tree_receipts.set_column_expand(3, false)
 	tree_receipts.set_column_custom_minimum_width(3, 80)
+	tree_receipts.item_activated.connect(_on_receipt_item_activated)
 
 	load_data()
 	update_settings()
-
-	# Setting up the UI.
-	var date: Dictionary = Time.get_date_dict_from_system()
-	for index: int in option_button_year.item_count:
-		if int(option_button_year.get_item_text(index)) == date.year:
-			option_button_year.selected = index
-			break
 
 
 func update_settings() -> void:
@@ -118,6 +116,7 @@ func scale_display(ui_scale: float) -> void:
 
 	ThemeUpdater.apply_scale(new_theme, ui_scale)
 	self.theme = new_theme
+	on_display_scaled.emit(ui_scale)
 
 
 #---- Data handling ----
@@ -202,7 +201,15 @@ func _after_load_data() -> void:
 		# When the current year isn't added, we add the year with all months.
 		_add_year(current_year)
 
+	# Setting up the UI.
+	var date: Dictionary = Time.get_date_dict_from_system()
+	for index: int in option_button_year.item_count:
+		if int(option_button_year.get_item_text(index)) == date.year:
+			option_button_year.selected = index
+			break
+
 	_refresh_option_button_year()
+	_on_option_button_item_selected()
 
 
 #---- Handling - Memo's ----
@@ -257,6 +264,48 @@ func add_receipt(date: int, desc: String, income: int, expense: int) -> void:
 
 	current_receipt_id += 1 # Increase for next receipt.
 	_load_receipts() # For updating the UI.
+	_unsaved_changes()
+
+
+func update_receipt(index: int, date: int, desc: String, income: int, expense: int) -> void:
+	if index < 0 or index >= receipt_dates.size():
+		return
+	var year_month: int = floori(date / 100.0) # Add year if doesn't exist.
+	if !ids.has(year_month):
+		_add_year(floori(year_month / 100.0))
+		_refresh_option_button_year()
+
+	receipt_dates[index] = date
+	descriptions[index] = desc
+	income_amount[index] = income
+	expense_amount[index] = expense
+	_load_receipts()
+	_unsaved_changes()
+
+
+func delete_receipt(index: int) -> void:
+	if index < 0 or index >= receipt_dates.size():
+		return
+	receipt_ids.remove_at(index)
+	receipt_dates.remove_at(index)
+	descriptions.remove_at(index)
+	income_amount.remove_at(index)
+	expense_amount.remove_at(index)
+	_load_receipts()
+	_unsaved_changes()
+
+
+func _on_receipt_item_activated() -> void:
+	var item: TreeItem = tree_receipts.get_selected()
+	var index: int = item.get_metadata(0)
+	if index == -1:
+		_open_popup_panel("uid://cd5ss8wxdm763")
+		return
+	var edit_scene: PackedScene = load("res://menus/edit_receipt_menu.tscn")
+	var edit_menu: EditReceiptMenu = edit_scene.instantiate()
+	add_child(edit_menu)
+	edit_menu.popup_centered()
+	edit_menu.setup(index, receipt_dates[index], descriptions[index], income_amount[index], expense_amount[index])
 
 
 #---- Buttons ----
@@ -328,7 +377,7 @@ func _load_receipts() -> void:
 	var root: TreeItem = tree_receipts.create_item()
 
 	var indexes: Array = []
-	for index: int in receipt_dates:
+	for index: int in receipt_dates.size():
 		if floori(receipt_dates[index] / 100.0) == _current_date:
 			indexes.append(index)
 	indexes.sort_custom(_sort_receipts)
@@ -336,12 +385,15 @@ func _load_receipts() -> void:
 	for index: int in indexes:
 		var tree_item: TreeItem = root.create_child()
 		var day: int = receipt_dates[index] % 100
+		tree_item.set_metadata(0, index)
 		tree_item.set_text(0, "%02d" % day)
 		tree_item.set_text(1, descriptions[index])
+
 		if income_amount[index] > 0:
 			tree_item.set_text(2, format_currency(income_amount[index]))
 		if expense_amount[index] > 0:
 			tree_item.set_text(3, format_currency(expense_amount[index]))
+
 		tree_item.set_tooltip_text(1, descriptions[index])
 		tree_item.set_tooltip_text(2, format_currency(income_amount[index]))
 		tree_item.set_tooltip_text(3, format_currency(expense_amount[index]))
@@ -352,10 +404,12 @@ func _load_receipts() -> void:
 		tree_item.set_selectable(1, false)
 		tree_item.set_selectable(2, false)
 		tree_item.set_selectable(3, false)
-	if indexes.size() < 30:
-		# Having some empty entries makes the UI look cleaner
+
+	if indexes.size() < 30: # Having some empty entries makes UI look cleaner.
 		for i: int in 30 - indexes.size():
-			root.create_child()
+			var empty: TreeItem = root.create_child()
+			empty.set_selectable(0, false)
+			empty.set_metadata(0, -1)
 	_update_amounts()
 
 
@@ -415,11 +469,14 @@ func _update_amounts() -> void:
 		tree_item.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
 		tree_item.set_tooltip_text(1, amount_str)
 
-	label_year_amount.text = format_currency(year_total)
-	label_year_amount.modulate = COLOR_POSITIVE if year_total >= 0 else COLOR_NEGATIVE
-
-	label_month_amount.text = format_currency(month_total)
-	label_month_amount.modulate = COLOR_POSITIVE if month_total >= 0 else COLOR_NEGATIVE
+	tree_total.clear()
+	var item: TreeItem = tree_total.create_item().create_child()
+	item.set_text(0, format_currency(year_total))
+	item.set_text(1, format_currency(month_total))
+	item.set_text_alignment(0, HORIZONTAL_ALIGNMENT_RIGHT)
+	item.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
+	item.set_custom_bg_color(0, COLOR_POSITIVE if year_total >= 0 else COLOR_NEGATIVE)
+	item.set_custom_bg_color(1, COLOR_POSITIVE if month_total >= 0 else COLOR_NEGATIVE)
 
 
 #---- Helper functions ----
@@ -464,14 +521,6 @@ func _add_year(year: int) -> void:
 		monthly_income_sources[id].resize(5)
 		monthly_expense_sources[id].resize(10)
 	option_button_year.add_item(str(year), year)
-
-
-func change_color_theme(color_base: Color, color_accent: Color, ui_scale: float) -> void:
-	var template: Theme = load("uid://bx4m4dhs6t40")
-	var new_theme: Theme = template.duplicate(true)
-
-	ThemeUpdater.update_theme(new_theme, color_base, color_accent, ui_scale)
-	self.theme = new_theme
 
 
 func format_currency(value: int) -> String:

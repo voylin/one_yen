@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://dcvdqftrrno15"]
 
 [ext_resource type="Script" uid="uid://bnbpr8nk1wy4e" path="res://main.gd" id="1_ig7tw"]
-[ext_resource type="StyleBox" uid="uid://bgjcwexn4uyp5" path="res://styles/style_box_positive.tres" id="2_0xm2m"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7dm0k"]
 content_margin_left = 7.0
@@ -18,7 +17,7 @@ corner_detail = 5
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7dm0k"]
 size = Vector2(0, 0)
 
-[node name="Main" type="PanelContainer" unique_id=1307242947 node_paths=PackedStringArray("button_save", "option_button_year", "option_button_month", "text_edit_memo", "tree_monthly_income", "tree_monthly_expenses", "tree_summary", "tree_receipts", "label_year_amount", "label_month_amount")]
+[node name="Main" type="PanelContainer" unique_id=1307242947 node_paths=PackedStringArray("button_save", "option_button_year", "option_button_month", "text_edit_memo", "tree_monthly_income", "tree_monthly_expenses", "tree_summary", "tree_total", "tree_receipts")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -33,9 +32,8 @@ text_edit_memo = NodePath("VBox/ContentHSplit/LeftVBox/MemoTextEdit")
 tree_monthly_income = NodePath("VBox/ContentHSplit/MiddleVSplit/MonthlyIncomeTree")
 tree_monthly_expenses = NodePath("VBox/ContentHSplit/MiddleVSplit/MonthlyExpensesTree")
 tree_summary = NodePath("VBox/ContentHSplit/MiddleVSplit/SummaryTree")
+tree_total = NodePath("VBox/ContentHSplit/MiddleVSplit/TotalTree")
 tree_receipts = NodePath("VBox/ContentHSplit/ReceiptPanel/MarginContainer/ReceiptTree")
-label_year_amount = NodePath("VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel/SummaryGrid/YearAmountLabel")
-label_month_amount = NodePath("VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel/SummaryGrid/MonthAmountLabel")
 
 [node name="VBox" type="VBoxContainer" parent="." unique_id=793946214]
 layout_mode = 2
@@ -143,8 +141,8 @@ placeholder_text = "Memo ..."
 [node name="MiddleVSplit" type="VSplitContainer" parent="VBox/ContentHSplit" unique_id=2041308027]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-split_offsets = PackedInt32Array(-3, -64, -51)
-split_offset = -3
+split_offsets = PackedInt32Array(-20, -98, -39)
+split_offset = -20
 
 [node name="MonthlyIncomeTree" type="Tree" parent="VBox/ContentHSplit/MiddleVSplit" unique_id=683497514]
 layout_mode = 2
@@ -166,7 +164,6 @@ scroll_horizontal_enabled = false
 
 [node name="SummaryTree" type="Tree" parent="VBox/ContentHSplit/MiddleVSplit" unique_id=946825238]
 layout_mode = 2
-size_flags_vertical = 3
 columns = 2
 column_titles_visible = true
 hide_folding = true
@@ -174,45 +171,14 @@ hide_root = true
 scroll_horizontal_enabled = false
 scroll_vertical_enabled = false
 
-[node name="TotalSummaryPanel" type="PanelContainer" parent="VBox/ContentHSplit/MiddleVSplit" unique_id=1451808066]
-clip_children = 2
-layout_mode = 2
-
-[node name="SummaryGrid" type="GridContainer" parent="VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel" unique_id=2000369198]
+[node name="TotalTree" type="Tree" parent="VBox/ContentHSplit/MiddleVSplit" unique_id=1753642547]
 layout_mode = 2
 columns = 2
-
-[node name="YearTotalLabel" type="Label" parent="VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel/SummaryGrid" unique_id=901183377]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Year's total"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MonthTotalLabel" type="Label" parent="VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel/SummaryGrid" unique_id=510915525]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Month's total"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="YearAmountLabel" type="Label" parent="VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel/SummaryGrid" unique_id=2111314295]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_styles/normal = ExtResource("2_0xm2m")
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MonthAmountLabel" type="Label" parent="VBox/ContentHSplit/MiddleVSplit/TotalSummaryPanel/SummaryGrid" unique_id=191978961]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_styles/normal = ExtResource("2_0xm2m")
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 1
+column_titles_visible = true
+hide_folding = true
+hide_root = true
+scroll_horizontal_enabled = false
+scroll_vertical_enabled = false
 
 [node name="ReceiptPanel" type="PanelContainer" parent="VBox/ContentHSplit" unique_id=953253128]
 layout_mode = 2

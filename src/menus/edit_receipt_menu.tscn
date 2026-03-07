@@ -1,19 +1,18 @@
-[gd_scene format=3 uid="uid://cd5ss8wxdm763"]
+[gd_scene format=3 uid="uid://c0fognfr5n3tj"]
 
-[ext_resource type="Script" uid="uid://2jcxac24cesl" path="res://menus/add_receipt_menu.gd" id="1_h5sde"]
+[ext_resource type="Script" uid="uid://cokw7p5nt8mlx" path="res://menus/edit_receipt_menu.gd" id="1_cie7l"]
 
-[node name="AddReceiptMenu" type="PopupPanel" unique_id=174272250 node_paths=PackedStringArray("tree", "button_add_new")]
+[node name="EditReceiptMenu" type="PopupPanel" unique_id=174272250 node_paths=PackedStringArray("tree")]
 oversampling_override = 1.0
-title = "Add receipt(s)"
+title = "Edit receipt"
 position = Vector2i(0, 36)
 size = Vector2i(600, 200)
 visible = true
 unresizable = false
 borderless = false
 always_on_top = true
-script = ExtResource("1_h5sde")
-tree = NodePath("VBox/AddReceiptsTree")
-button_add_new = NodePath("VBox/ButtonHBox/AddButton")
+script = ExtResource("1_cie7l")
+tree = NodePath("VBox/EditReceiptTree")
 
 [node name="VBox" type="VBoxContainer" parent="." unique_id=810788031]
 offset_left = 4.0
@@ -21,10 +20,9 @@ offset_top = 4.0
 offset_right = 596.0
 offset_bottom = 196.0
 
-[node name="AddReceiptsTree" type="Tree" parent="VBox" unique_id=1927010976]
+[node name="EditReceiptTree" type="Tree" parent="VBox" unique_id=1927010976]
 layout_mode = 2
 size_flags_vertical = 3
-columns = 6
 column_titles_visible = true
 hide_folding = true
 scroll_horizontal_enabled = false
@@ -35,31 +33,31 @@ layout_mode = 2
 [node name="CancelButton" type="Button" parent="VBox/ButtonHBox" unique_id=1223824153]
 layout_mode = 2
 size_flags_horizontal = 3
-focus_neighbor_top = NodePath("../../AddReceiptsTree")
-focus_neighbor_right = NodePath("../AddButton")
-focus_next = NodePath("../AddButton")
-focus_previous = NodePath("../../AddReceiptsTree")
+focus_neighbor_top = NodePath("../../EditReceiptTree")
+focus_neighbor_right = NodePath("../DeleteButton")
+focus_next = NodePath("../DeleteButton")
+focus_previous = NodePath("../../EditReceiptTree")
 text = "Cancel"
 
-[node name="AddButton" type="Button" parent="VBox/ButtonHBox" unique_id=1397278990]
+[node name="DeleteButton" type="Button" parent="VBox/ButtonHBox" unique_id=1397278990]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_neighbor_left = NodePath("../CancelButton")
-focus_neighbor_top = NodePath("../../AddReceiptsTree")
+focus_neighbor_top = NodePath("../../EditReceiptTree")
 focus_neighbor_right = NodePath("../ConfirmButton")
 focus_next = NodePath("../ConfirmButton")
 focus_previous = NodePath("../CancelButton")
-text = "Add new"
+text = "Delete receipt"
 
 [node name="ConfirmButton" type="Button" parent="VBox/ButtonHBox" unique_id=1434727468]
 layout_mode = 2
 size_flags_horizontal = 3
-focus_neighbor_left = NodePath("../AddButton")
-focus_neighbor_top = NodePath("../../AddReceiptsTree")
+focus_neighbor_left = NodePath("../DeleteButton")
+focus_neighbor_top = NodePath("../../EditReceiptTree")
 focus_next = NodePath("../CancelButton")
-focus_previous = NodePath("../AddButton")
-text = "Confirm"
+focus_previous = NodePath("../DeleteButton")
+text = "Confirm changes"
 
 [connection signal="pressed" from="VBox/ButtonHBox/CancelButton" to="." method="_on_cancel_button_pressed"]
-[connection signal="pressed" from="VBox/ButtonHBox/AddButton" to="." method="_on_add_button_pressed"]
+[connection signal="pressed" from="VBox/ButtonHBox/DeleteButton" to="." method="_on_delete_button_pressed"]
 [connection signal="pressed" from="VBox/ButtonHBox/ConfirmButton" to="." method="_on_confirm_button_pressed"]

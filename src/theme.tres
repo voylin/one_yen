@@ -1,6 +1,6 @@
 [gd_resource type="Theme" format=4 uid="uid://bx4m4dhs6t40"]
 
-[ext_resource type="FontFile" uid="uid://bgwbr5ruuvp08" path="res://fonts/roboto_mono/RobotoMono-VariableFont_wght.ttf" id="1_molii"]
+[ext_resource type="FontFile" uid="uid://bgwbr5ruuvp08" path="res://fonts/roboto_mono/RobotoMono-VariableFont_wght.ttf" id="1_e1x85"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wfyrf"]
 content_margin_left = 8.0
@@ -2299,7 +2299,7 @@ variation_transform = Transform2D(1, 0.2, 0, 1, 0, 0)
 base_font = SubResource("FontFile_dejc1")
 variation_transform = Transform2D(1, 0.2, 0, 1, 0, 0)
 
-[sub_resource type="Image" id="Image_5llwy"]
+[sub_resource type="Image" id="Image_e1x85"]
 data = {
 "data": PackedByteArray("/////////////////////w=="),
 "format": "RGBA8",
@@ -2309,7 +2309,7 @@ data = {
 }
 
 [sub_resource type="ImageTexture" id="ImageTexture_jfli0"]
-image = SubResource("Image_5llwy")
+image = SubResource("Image_e1x85")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gjk5a"]
 content_margin_left = 0.0
@@ -2697,7 +2697,7 @@ expand_margin_right = 8.0
 expand_margin_bottom = 6.0
 
 [resource]
-default_font = ExtResource("1_molii")
+default_font = ExtResource("1_e1x85")
 default_font_size = 14
 AcceptDialog/constants/buttons_separation = 10
 AcceptDialog/styles/panel = SubResource("StyleBoxFlat_wfyrf")
@@ -3005,12 +3005,12 @@ Label/styles/normal = SubResource("StyleBoxEmpty_np2at")
 LineEdit/colors/caret_color = Color(0.95, 0.95, 0.95, 1)
 LineEdit/colors/clear_button_color = Color(0.875, 0.875, 0.875, 1)
 LineEdit/colors/clear_button_color_pressed = Color(1, 1, 1, 1)
-LineEdit/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+LineEdit/colors/font_color = Color(0.99116415, 0.99116427, 0.99116415, 1)
 LineEdit/colors/font_outline_color = Color(0, 0, 0, 1)
 LineEdit/colors/font_placeholder_color = Color(0.875, 0.875, 0.875, 0.6)
 LineEdit/colors/font_selected_color = Color(1, 1, 1, 1)
-LineEdit/colors/font_uneditable_color = Color(0.875, 0.875, 0.875, 0.5)
-LineEdit/colors/selection_color = Color(0.5, 0.5, 0.5, 1)
+LineEdit/colors/font_uneditable_color = Color(0.973535, 0.9735351, 0.973535, 1)
+LineEdit/colors/selection_color = Color(0.44313726, 0.44313726, 0.44313726, 0.6509804)
 LineEdit/constants/caret_width = 1
 LineEdit/constants/minimum_character_width = 4
 LineEdit/constants/outline_size = 0
@@ -3309,7 +3309,7 @@ TooltipPanel/styles/panel = SubResource("StyleBoxFlat_6cowh")
 Tree/colors/children_hl_line_color = Color(0.27, 0.27, 0.27, 1)
 Tree/colors/custom_button_font_highlight = Color(0.95, 0.95, 0.95, 1)
 Tree/colors/drop_position_color = Color(1, 1, 1, 1)
-Tree/colors/font_color = Color(0.7, 0.7, 0.7, 1)
+Tree/colors/font_color = Color(0.9471994, 0.9471994, 0.9471994, 1)
 Tree/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
 Tree/colors/font_hovered_color = Color(0.95, 0.95, 0.95, 1)
 Tree/colors/font_hovered_dimmed_color = Color(0.875, 0.875, 0.875, 1)

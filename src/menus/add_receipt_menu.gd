@@ -6,8 +6,12 @@ extends Window
 @export var button_add_new: Button
 
 
+var root: TreeItem
+
+
 
 func _ready() -> void:
+	root = tree.create_item()
 	tree.set_column_title(0, "Year")
 	tree.set_column_title(1, "Month")
 	tree.set_column_title(2, "Day")
@@ -73,7 +77,6 @@ func _on_cancel_button_pressed() -> void:
 
 ## Create a new tree item and set the year + month to save work typing it.
 func _on_add_button_pressed() -> void:
-	var root: TreeItem = tree.get_root()
 	var id: int = root.get_child_count()
 	var tree_item: TreeItem = root.create_child()
 
@@ -90,6 +93,9 @@ func _on_add_button_pressed() -> void:
 		var prev: TreeItem = tree.get_root().get_child(id - 1)
 		tree_item.set_text(0, prev.get_text(0))
 		tree_item.set_text(1, prev.get_text(1))
+
+	for i: int in 6:
+		tree_item.set_editable(i, true)
 
 	# Set focus to the empty day box.
 	tree.grab_focus()

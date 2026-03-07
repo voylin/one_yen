@@ -32,7 +32,6 @@ gdscript/warnings/unsafe_call_argument=1
 [file_customization]
 
 folder_colors={
-"res://styles/": "green",
 "res://translations/": "gray"
 }
 
