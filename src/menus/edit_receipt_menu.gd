@@ -1,5 +1,5 @@
 class_name EditReceiptMenu
-extends PopupPanel
+extends Window
 
 @export var tree: Tree
 
@@ -11,6 +11,24 @@ var _index: int = -1
 func setup(index: int, date: int, desc: String, income: int, expense: int) -> void:
 	close_requested.connect(queue_free)
 	tree.item_edited.connect(_on_item_edited)
+
+	tree.set_column_title(0, "Year")
+	tree.set_column_title(1, "Month")
+	tree.set_column_title(2, "Day")
+	tree.set_column_title(3, "Description")
+	tree.set_column_title(4, "Income")
+	tree.set_column_title(5, "Expense")
+
+	tree.set_column_expand(0, false)
+	tree.set_column_custom_minimum_width(0, 40)
+	tree.set_column_expand(1, false)
+	tree.set_column_custom_minimum_width(1, 40)
+	tree.set_column_expand(2, false)
+	tree.set_column_custom_minimum_width(2, 40)
+	tree.set_column_expand(4, false)
+	tree.set_column_custom_minimum_width(4, 60)
+	tree.set_column_expand(5, false)
+	tree.set_column_custom_minimum_width(5, 60)
 
 	_index = index
 	var root: TreeItem = tree.create_item()

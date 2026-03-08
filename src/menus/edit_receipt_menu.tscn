@@ -22,8 +22,10 @@ grow_vertical = 2
 [node name="EditReceiptTree" type="Tree" parent="VBox" unique_id=1927010976]
 layout_mode = 2
 size_flags_vertical = 3
+columns = 6
 column_titles_visible = true
 hide_folding = true
+hide_root = true
 scroll_horizontal_enabled = false
 
 [node name="ButtonHBox" type="HBoxContainer" parent="VBox" unique_id=1085080091]

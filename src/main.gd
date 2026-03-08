@@ -40,8 +40,8 @@ var monthly_expenses: Array[PackedInt64Array] ## [[0, ...], ...] - 10 entries.
 # Income sources and monthly expenses don't change each year.
 # There is a max of 5 income sources which can be set, and a max of 10 monthly
 # expenses which can be set.
-var monthly_income_sources: Dictionary[int, PackedStringArray] ## { year + month date: [5 sources]}.
-var monthly_expense_sources: Dictionary[int, PackedStringArray] ## { year + month date: [10 sources]}.
+var monthly_income_sources: Dictionary[int, PackedStringArray] ## { year: [5 sources]}.
+var monthly_expense_sources: Dictionary[int, PackedStringArray] ## { year: [10 sources]}.
 
 #---- RECEIPT DATA ------------------------------------------------------------
 var receipt_ids: PackedInt32Array ## Incremented unique number.
@@ -51,6 +51,7 @@ var expense_amount: PackedInt64Array ## Amount paid.
 var income_amount: PackedInt64Array ## Amount received.
 
 var current_receipt_id: int = 0 ## Will always get +1 to not cause issues.
+
 
 #---- SETTINGS ----------------------------------------------------------------
 var setting_currency_symbol: String = "¥"
@@ -203,13 +204,18 @@ func _after_load_data() -> void:
 	# Collecting list of all years which have data and populate option button.
 	var current_year: int = Time.get_date_dict_from_system().year
 	var current_year_added: bool = false
+	var added_years: Array[int] = []
+	var sorted_ids: PackedInt32Array = ids.duplicate()
+	sorted_ids.sort()
 
 	option_button_year.clear()
-	for id: int in ids: # Each id is build with year-month (202601).
+	for id: int in sorted_ids: # Each id is build with year-month (202601).
 		var year: int = floori(id / 100.0)
-		option_button_year.add_item(str(year), year)
-		if current_year == year:
-			current_year_added = true
+		if year not in added_years:
+			option_button_year.add_item(str(year), year)
+			added_years.append(year)
+			if current_year == year:
+				current_year_added = true
 	if !current_year_added:
 		# When the current year isn't added, we add the year with all months.
 		_add_year(current_year)
@@ -287,15 +293,15 @@ func _on_monthly_income_item_edited() -> void:
 		return
 
 	var idx: int = item.get_index()
-	if idx < monthly_income_sources[_current_date].size():
+	if idx < monthly_income_sources[get_year()].size():
 		var new_source_name: String = item.get_text(0)
 		var current_year: int = floori(_current_date / 100.0)
 
-		for date: int in monthly_income_sources:
-			if floori(date / 100.0) == current_year:
-				monthly_income_sources[date][idx] = new_source_name
+		for year: int in monthly_income_sources:
+			if year == current_year:
+				monthly_income_sources[year][idx] = new_source_name
 
-		monthly_income_sources[_current_date][idx] = item.get_text(0)
+		monthly_income_sources[get_year()][idx] = item.get_text(0)
 		var value: int = correct_input(item.get_text(1))
 		monthly_income[_current_index][idx] = value
 		item.set_text(1, format_currency(value))
@@ -310,15 +316,15 @@ func _on_monthly_expenses_item_edited() -> void:
 		return
 
 	var idx: int = item.get_index()
-	if idx < monthly_expense_sources[_current_date].size():
+	if idx < monthly_expense_sources[get_year()].size():
 		var new_source_name: String = item.get_text(0)
 		var current_year: int = floori(_current_date / 100.0)
 
-		for date: int in monthly_expense_sources:
-			if floori(date / 100.0) == current_year:
-				monthly_expense_sources[date][idx] = new_source_name
+		for year: int in monthly_expense_sources:
+			if year == current_year:
+				monthly_expense_sources[year][idx] = new_source_name
 
-		monthly_expense_sources[_current_date][idx] = item.get_text(0)
+		monthly_expense_sources[get_year()][idx] = item.get_text(0)
 		var value: int = correct_input(item.get_text(1))
 		monthly_expenses[_current_index][idx] = value
 		item.set_text(1, format_currency(value))
@@ -420,9 +426,9 @@ func _load_income() -> void:
 	var root: TreeItem = tree_monthly_income.create_item()
 	var empty: String = format_currency(0)
 
-	for index: int in monthly_income_sources[_current_date].size():
+	for index: int in monthly_income_sources[get_year()].size():
 		var tree_item: TreeItem = root.create_child()
-		var source: String = monthly_income_sources[_current_date][index]
+		var source: String = monthly_income_sources[get_year()][index]
 		var amount: String = format_currency(monthly_income[_current_index][index])
 		tree_item.set_text(0, source)
 		if amount != empty:
@@ -438,9 +444,9 @@ func _load_monthly_expenses() -> void:
 	var root: TreeItem = tree_monthly_expenses.create_item()
 	var empty: String = format_currency(0)
 
-	for index: int in monthly_expense_sources[_current_date].size():
+	for index: int in monthly_expense_sources[get_year()].size():
 		var tree_item: TreeItem = root.create_child()
-		var source: String = monthly_expense_sources[_current_date][index]
+		var source: String = monthly_expense_sources[get_year()][index]
 		var amount: String = format_currency(monthly_expenses[_current_index][index])
 		tree_item.set_text(0, source)
 		if amount != empty:
@@ -478,10 +484,6 @@ func _load_receipts() -> void:
 		tree_item.set_text_alignment(0, HORIZONTAL_ALIGNMENT_CENTER)
 		tree_item.set_text_alignment(2, HORIZONTAL_ALIGNMENT_RIGHT)
 		tree_item.set_text_alignment(3, HORIZONTAL_ALIGNMENT_RIGHT)
-		tree_item.set_selectable(0, false)
-		tree_item.set_selectable(1, false)
-		tree_item.set_selectable(2, false)
-		tree_item.set_selectable(3, false)
 
 	if indexes.size() < 30: # Having some empty entries makes UI look cleaner.
 		for i: int in 30 - indexes.size():
@@ -584,13 +586,21 @@ func get_month() -> int:
 
 
 func _refresh_option_button_year() -> void:
+	var current_selected_year_id: int = -1
+	if option_button_year.selected != -1:
+		current_selected_year_id = option_button_year.get_selected_id()
+
 	var years: PackedInt32Array = []
 	for index: int in option_button_year.item_count:
-		years.append(option_button_year.get_item_id(index))
+		var year: int = option_button_year.get_item_id(index)
+		if not year in years:
+			years.append(year)
 	years.sort()
 	option_button_year.clear()
 	for year: int in years:
 		option_button_year.add_item(str(year), year)
+		if year == current_selected_year_id:
+			option_button_year.selected = option_button_year.item_count - 1
 
 
 func _unsaved_changes() -> void:
@@ -601,13 +611,13 @@ func _unsaved_changes() -> void:
 func _add_year(year: int) -> void:
 	var full_year: int = year * 100
 
-	var prev_december: int = (year - 1) * 100 + 12
+	var prev_year: int = year - 1
 	var copy_income: PackedStringArray = []
 	var copy_expenses: PackedStringArray = []
 
-	if monthly_income_sources.has(prev_december):
-		copy_income = monthly_income_sources[prev_december].duplicate()
-		copy_expenses = monthly_expense_sources[prev_december].duplicate()
+	if monthly_income_sources.has(prev_year):
+		copy_income = monthly_income_sources[prev_year].duplicate()
+		copy_expenses = monthly_expense_sources[prev_year].duplicate()
 
 	for i: int in 12:
 		var id: int = full_year + i + 1 # 202601 (Year-month).
@@ -619,20 +629,23 @@ func _add_year(year: int) -> void:
 		monthly_income[-1].resize(5)
 		monthly_expenses[-1].resize(10)
 
-		if !copy_income.is_empty():
-			monthly_income_sources[id] = []
-		if !copy_expenses.is_empty():
-			monthly_expense_sources[id] = []
+		if copy_income.is_empty():
+			monthly_income_sources[year] = []
+			monthly_income_sources[year].resize(5)
+		else:
+			monthly_income_sources[year] = copy_income.duplicate()
 
-		monthly_income_sources[id].resize(5)
-		monthly_expense_sources[id].resize(10)
+		if copy_expenses.is_empty():
+			monthly_expense_sources[year] = []
+			monthly_expense_sources[year].resize(10)
+		else:
+			monthly_expense_sources[year] = copy_expenses.duplicate()
+
 	option_button_year.add_item(str(year), year)
+	_refresh_option_button_year()
 
 
 func format_currency(value: int) -> String:
-	if value == 0:
-		return ""
-
 	var is_negative: bool = value < 0
 	value = abs(value)
 	var decimal_str: String = ""
