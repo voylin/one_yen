@@ -29,6 +29,8 @@ var languages: PackedStringArray = []
 
 
 func _ready() -> void:
+	close_requested.connect(_on_cancel_button_pressed)
+
 	setup_language_setting()
 	setup_currency_setting()
 	setup_encryption_password_setting()
@@ -72,7 +74,10 @@ func _on_secret_button_pressed() -> void:
 func _on_display_scale_h_slider_drag_ended(value_changed: bool) -> void:
 	if value_changed:
 		Main.instance.scale_display(slider_display_scale.value)
-	# TODO: We should scale the Settings window as things don't fit anymore on scaling.
+		await RenderingServer.frame_post_draw
+		var container: Control = get_child(0)
+		size = container.get_combined_minimum_size()
+		move_to_center()
 
 
 #---- Main Buttons ----

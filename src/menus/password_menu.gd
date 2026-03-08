@@ -7,6 +7,7 @@ extends Window
 
 
 func _on_line_edit_text_submitted(password: String) -> void:
+	close_requested.connect(get_tree().quit)
 	FileAccess.open_encrypted_with_pass(Main.PATH, FileAccess.READ, password)
 	var error: int = FileAccess.get_open_error()
 	if error == OK:

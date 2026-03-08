@@ -11,6 +11,9 @@ var root: TreeItem
 
 
 func _ready() -> void:
+	close_requested.connect(queue_free)
+	tree.item_edited.connect(_on_item_edited)
+
 	root = tree.create_item()
 	tree.set_column_title(0, "Year")
 	tree.set_column_title(1, "Month")
@@ -30,13 +33,24 @@ func _ready() -> void:
 	tree.set_column_expand(5, false)
 	tree.set_column_custom_minimum_width(5, 60)
 
+	_on_add_button_pressed()
+
+
+func _process(_delta: float) -> void:
+	if Input.is_action_just_pressed("ui_focus_next") or Input.is_action_just_pressed("ui_focus_prev"):
+		var current_focus: Control = get_viewport().gui_get_focus_owner()
+		if current_focus and (current_focus == tree or tree.is_ancestor_of(current_focus)):
+			var is_shift: bool = Input.is_action_just_pressed("ui_focus_prev")
+			_handle_tree_tab_navigation(is_shift)
+
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var key_event: InputEventKey = event
-		if key_event.pressed and key_event.keycode == KEY_TAB:
+		if key_event.pressed and not key_event.echo and key_event.keycode == KEY_TAB:
 			var current_focus: Control = get_viewport().gui_get_focus_owner()
 			if current_focus == tree or tree.is_ancestor_of(current_focus):
+				get_viewport().set_input_as_handled()
 				_handle_tree_tab_navigation(key_event.shift_pressed)
 
 
@@ -61,12 +75,26 @@ func _handle_tree_tab_navigation(is_shift: bool) -> void:
 			next_item = item.get_next()
 
 	if next_item:
+		get_viewport().set_input_as_handled()
 		next_item.select(next_column)
 		tree.scroll_to_item(next_item)
-		tree.edit_selected()
+		await RenderingServer.frame_post_draw
+		if is_instance_valid(tree) and is_instance_valid(next_item):
+			tree.edit_selected()
 		get_viewport().set_input_as_handled()
 	elif not is_shift and next_column == 0:
 		button_add_new.grab_focus()
+		get_viewport().set_input_as_handled()
+
+
+
+func _on_item_edited() -> void:
+	var item: TreeItem = tree.get_selected()
+	var column: int = tree.get_selected_column()
+	# Format Income (4) and Expense (5) columns
+	if column == 4 or column == 5:
+		var value: int = Main.instance.correct_input(item.get_text(column))
+		item.set_text(column, Main.instance.format_currency(value))
 
 
 #---- Buttons ----
@@ -97,9 +125,17 @@ func _on_add_button_pressed() -> void:
 	for i: int in 6:
 		tree_item.set_editable(i, true)
 
+	tree_item.set_text_alignment(0, HORIZONTAL_ALIGNMENT_CENTER)
+	tree_item.set_text_alignment(1, HORIZONTAL_ALIGNMENT_CENTER)
+	tree_item.set_text_alignment(2, HORIZONTAL_ALIGNMENT_CENTER)
+	tree_item.set_text_alignment(4, HORIZONTAL_ALIGNMENT_RIGHT)
+	tree_item.set_text_alignment(5, HORIZONTAL_ALIGNMENT_RIGHT)
+
 	# Set focus to the empty day box.
 	tree.grab_focus()
 	tree_item.select(2)
+	tree.scroll_to_item(tree_item)
+	await RenderingServer.frame_post_draw
 	tree.edit_selected()
 
 

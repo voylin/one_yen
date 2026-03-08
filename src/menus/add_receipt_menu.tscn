@@ -2,24 +2,23 @@
 
 [ext_resource type="Script" uid="uid://2jcxac24cesl" path="res://menus/add_receipt_menu.gd" id="1_h5sde"]
 
-[node name="AddReceiptMenu" type="PopupPanel" unique_id=174272250 node_paths=PackedStringArray("tree", "button_add_new")]
+[node name="AddReceiptMenu" type="Window" unique_id=1782243014 node_paths=PackedStringArray("tree", "button_add_new")]
 oversampling_override = 1.0
 title = "Add receipt(s)"
 position = Vector2i(0, 36)
 size = Vector2i(600, 200)
-visible = true
-unresizable = false
-borderless = false
-always_on_top = true
+exclusive = true
+popup_window = true
 script = ExtResource("1_h5sde")
 tree = NodePath("VBox/AddReceiptsTree")
 button_add_new = NodePath("VBox/ButtonHBox/AddButton")
 
 [node name="VBox" type="VBoxContainer" parent="." unique_id=810788031]
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 596.0
-offset_bottom = 196.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="AddReceiptsTree" type="Tree" parent="VBox" unique_id=1927010976]
 layout_mode = 2
@@ -27,6 +26,7 @@ size_flags_vertical = 3
 columns = 6
 column_titles_visible = true
 hide_folding = true
+hide_root = true
 scroll_horizontal_enabled = false
 
 [node name="ButtonHBox" type="HBoxContainer" parent="VBox" unique_id=1085080091]

@@ -7,6 +7,8 @@ extends Window
 
 
 func _ready() -> void:
+	close_requested.connect(queue_free)
+
 	tree.set_column_title(0, tr("Date"))
 	tree.set_column_title(1, tr("Description"))
 	tree.set_column_title(2, tr("Income"))

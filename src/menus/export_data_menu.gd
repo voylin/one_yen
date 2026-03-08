@@ -10,6 +10,7 @@ static var previous_path: String = ""
 
 
 func _ready() -> void:
+	close_requested.connect(queue_free)
 	line_edit_path.text = previous_path
 
 
