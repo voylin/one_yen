@@ -46,7 +46,7 @@ var monthly_expense_sources: Dictionary[int, PackedStringArray] ## { year + mont
 #---- RECEIPT DATA ------------------------------------------------------------
 var receipt_ids: PackedInt32Array ## Incremented unique number.
 var receipt_dates: PackedInt32Array ## 20260101 (Year-month-day).
-var descriptions: PackedStringArray ## Purchase/Income description
+var descriptions: PackedStringArray ## Purchase/Income description.
 var expense_amount: PackedInt64Array ## Amount paid.
 var income_amount: PackedInt64Array ## Amount received.
 
@@ -73,6 +73,9 @@ func _ready() -> void:
 	if !instance:
 		instance = self
 	get_window().min_size = Vector2i(1150, 640)
+
+	option_button_year.gui_input.connect(_on_year_button_scrolled)
+	option_button_month.gui_input.connect(_on_month_button_scrolled)
 
 	tree_monthly_income.item_edited.connect(_on_monthly_income_item_edited)
 	tree_monthly_expenses.item_edited.connect(_on_monthly_expenses_item_edited)
@@ -103,6 +106,16 @@ func _ready() -> void:
 
 	load_data()
 	update_settings()
+
+
+func _input(event: InputEvent) -> void:
+	if event is not InputEventKey:
+		return
+	var key_event: InputEventKey = event
+	if key_event.pressed and not key_event.echo:
+		if key_event.keycode == KEY_S and key_event.ctrl_pressed:
+			save_data()
+			get_viewport().set_input_as_handled()
 
 
 func update_settings() -> void:
@@ -208,8 +221,53 @@ func _after_load_data() -> void:
 			option_button_year.selected = index
 			break
 
+	option_button_month.selected = date.month - 1
 	_refresh_option_button_year()
 	_on_option_button_item_selected()
+
+
+#---- Year/month scrolling ----
+
+func _on_year_button_scrolled(event: InputEvent) -> void:
+	if event is not InputEventMouseButton:
+		return
+	var mouse_event: InputEventMouseButton = event
+	if !mouse_event.pressed:
+		return
+	var prev_idx: int = option_button_year.selected
+	if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		if option_button_year.selected > 0:
+			option_button_year.selected -= 1
+			get_viewport().set_input_as_handled()
+
+	elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		if option_button_year.selected < option_button_year.item_count - 1:
+			option_button_year.selected += 1
+			get_viewport().set_input_as_handled()
+
+	if prev_idx != option_button_year.selected:
+		_on_option_button_item_selected()
+
+
+func _on_month_button_scrolled(event: InputEvent) -> void:
+	if event is not InputEventMouseButton:
+		return
+	var mouse_event: InputEventMouseButton = event
+	if !mouse_event.pressed:
+		return
+	var prev_idx: int = option_button_month.selected
+	if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		if option_button_month.selected > 0:
+			option_button_month.selected -= 1
+			get_viewport().set_input_as_handled()
+
+	elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		if option_button_month.selected < option_button_month.item_count - 1:
+			option_button_month.selected += 1
+			get_viewport().set_input_as_handled()
+
+	if prev_idx != option_button_month.selected:
+		_on_option_button_item_selected()
 
 
 #---- Handling - Memo's ----
@@ -228,11 +286,21 @@ func _on_monthly_income_item_edited() -> void:
 	if not item:
 		return
 
-	# TODO: Update amount in tree based on setting_currency_separator if we need to add ','.
 	var idx: int = item.get_index()
 	if idx < monthly_income_sources[_current_date].size():
+		var new_source_name: String = item.get_text(0)
+		var current_year: int = floori(_current_date / 100.0)
+
+		for date: int in monthly_income_sources:
+			if floori(date / 100.0) == current_year:
+				monthly_income_sources[date][idx] = new_source_name
+
 		monthly_income_sources[_current_date][idx] = item.get_text(0)
-		monthly_income[_current_index][idx] = int(item.get_text(1))
+		var value: int = correct_input(item.get_text(1))
+		monthly_income[_current_index][idx] = value
+		item.set_text(1, format_currency(value))
+
+		_update_amounts()
 		_unsaved_changes()
 
 
@@ -241,11 +309,21 @@ func _on_monthly_expenses_item_edited() -> void:
 	if not item:
 		return
 
-	# TODO: Update amount in tree based on setting_currency_separator if we need to add ','.
 	var idx: int = item.get_index()
 	if idx < monthly_expense_sources[_current_date].size():
+		var new_source_name: String = item.get_text(0)
+		var current_year: int = floori(_current_date / 100.0)
+
+		for date: int in monthly_expense_sources:
+			if floori(date / 100.0) == current_year:
+				monthly_expense_sources[date][idx] = new_source_name
+
 		monthly_expense_sources[_current_date][idx] = item.get_text(0)
-		monthly_expenses[_current_index][idx] = int(item.get_text(1))
+		var value: int = correct_input(item.get_text(1))
+		monthly_expenses[_current_index][idx] = value
+		item.set_text(1, format_currency(value))
+
+		_update_amounts()
 		_unsaved_changes()
 
 
@@ -428,28 +506,44 @@ func _update_amounts() -> void:
 	var month_expense_receipts: int = 0
 
 	for index: int in receipt_dates.size():
-		var receipt_date: int = floori(receipt_dates[index] / 100.0)
-		if floori(receipt_date / 100.0) != year or receipt_date > _current_date:
+		var receipt_full_date: int = receipt_dates[index]
+		var receipt_month_date: int = floori(receipt_full_date / 100.0) # Format: YYYYMM
+		var receipt_year: int = floori(receipt_month_date / 100.0)
+
+		if receipt_year != year or receipt_month_date > _current_date:
 			continue # Out of scope.
 
 		var income: int = income_amount[index]
 		var expense: int = expense_amount[index]
-		var total: int = income + expense
-
-		if receipt_date < _current_date:
-			year_total += total
-		elif receipt_date == _current_date:
-			year_total += total
-			month_total += total
+		var difference: int = income - expense
+		year_total += difference
+		if receipt_month_date == _current_date:
+			month_total += difference
 			month_income_receipts += income
 			month_expense_receipts += expense
 
 	var month_fixed_income: int = 0
 	var month_fixed_expenses: int = 0
-	for i: int in monthly_income[_current_index].size():
-		month_fixed_income += monthly_income[_current_index][i]
-	for i: int in monthly_expenses[_current_index].size():
-		month_fixed_expenses += monthly_expenses[_current_index][i]
+	for i: int in ids.size():
+		var id: int = ids[i] # Format: YYYYMM
+		var id_year: int = floori(id / 100.0)
+
+		# Only process months in the selected year, up to the selected month.
+		if id_year == year and id <= _current_date:
+			var fixed_income: int = 0
+			for val: int in monthly_income[i]:
+				fixed_income += val
+
+			var fixed_expenses: int = 0
+			for val: int in monthly_expenses[i]:
+				fixed_expenses += val
+
+			var difference: int = fixed_income - fixed_expenses
+			year_total += difference
+			if id == _current_date:
+				month_total += difference
+				month_fixed_income = fixed_income
+				month_fixed_expenses = fixed_expenses
 
 	tree_summary.clear()
 	var root: TreeItem  = tree_summary.create_item()
@@ -459,10 +553,10 @@ func _update_amounts() -> void:
 			[tr("Receipt income", &"Tree summary"), month_income_receipts],
 			[tr("Receipt expenses", &"Tree summary"), month_expense_receipts]]
 
-	for item: Array in items:
+	for item_data: Array in items:
 		var tree_item: TreeItem = root.create_child()
-		var category: String = item[0]
-		var amount_int: int = item[1]
+		var category: String = item_data[0]
+		var amount_int: int = item_data[1]
 		var amount_str: String = format_currency(amount_int)
 		tree_item.set_text(0, category)
 		tree_item.set_text(1, amount_str)
@@ -473,8 +567,8 @@ func _update_amounts() -> void:
 	var item: TreeItem = tree_total.create_item().create_child()
 	item.set_text(0, format_currency(year_total))
 	item.set_text(1, format_currency(month_total))
-	item.set_text_alignment(0, HORIZONTAL_ALIGNMENT_RIGHT)
-	item.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
+	item.set_text_alignment(0, HORIZONTAL_ALIGNMENT_CENTER)
+	item.set_text_alignment(1, HORIZONTAL_ALIGNMENT_CENTER)
 	item.set_custom_bg_color(0, COLOR_POSITIVE if year_total >= 0 else COLOR_NEGATIVE)
 	item.set_custom_bg_color(1, COLOR_POSITIVE if month_total >= 0 else COLOR_NEGATIVE)
 
@@ -506,6 +600,15 @@ func _unsaved_changes() -> void:
 
 func _add_year(year: int) -> void:
 	var full_year: int = year * 100
+
+	var prev_december: int = (year - 1) * 100 + 12
+	var copy_income: PackedStringArray = []
+	var copy_expenses: PackedStringArray = []
+
+	if monthly_income_sources.has(prev_december):
+		copy_income = monthly_income_sources[prev_december].duplicate()
+		copy_expenses = monthly_expense_sources[prev_december].duplicate()
+
 	for i: int in 12:
 		var id: int = full_year + i + 1 # 202601 (Year-month).
 		ids.append(id)
@@ -516,14 +619,22 @@ func _add_year(year: int) -> void:
 		monthly_income[-1].resize(5)
 		monthly_expenses[-1].resize(10)
 
-		monthly_income_sources[id] = []
-		monthly_expense_sources[id] = []
+		if !copy_income.is_empty():
+			monthly_income_sources[id] = []
+		if !copy_expenses.is_empty():
+			monthly_expense_sources[id] = []
+
 		monthly_income_sources[id].resize(5)
 		monthly_expense_sources[id].resize(10)
 	option_button_year.add_item(str(year), year)
 
 
 func format_currency(value: int) -> String:
+	if value == 0:
+		return ""
+
+	var is_negative: bool = value < 0
+	value = abs(value)
 	var decimal_str: String = ""
 	var whole: int = value
 
@@ -549,7 +660,22 @@ func format_currency(value: int) -> String:
 	formatted += decimal_str
 
 	# Add symbol.
+	var result: String
 	if setting_currency_prefix:
-		return setting_currency_symbol + formatted
+		result = setting_currency_symbol + formatted
 	else:
-		return "%s %s" % [formatted, setting_currency_symbol]
+		result = "%s %s" % [formatted, setting_currency_symbol]
+
+	return "-" + result if is_negative else result
+
+
+## If people added symbols by themselves, we need to remove them,
+## including white spaces.
+func correct_input(text: String) -> int:
+	text = text.replace(setting_currency_symbol, "").strip_edges()
+	if not setting_currency_separator.is_empty():
+		text = text.replace(setting_currency_separator, "")
+	if not setting_currency_decimal_separator.is_empty():
+		text = text.replace(setting_currency_decimal_separator, ".")
+		return roundi(text.to_float() * 100)
+	return int(text)
